@@ -3,7 +3,6 @@ import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SplitType from 'split-type'
-import JSConfetti from 'js-confetti'
 
 // Register GSAP Plugins
 gsap.registerPlugin(ScrollTrigger)
@@ -16,22 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAudio()
   initMagneticButton()
   initAnimations()
-  fireConfetti()
 })
-
-// --- Confetti ---
-function fireConfetti() {
-  const jsConfetti = new JSConfetti()
-  
-  // Fire slightly after the text animations start
-  setTimeout(() => {
-    jsConfetti.addConfetti({
-      emojis: ['🎉', '🎈', '✨', '🎂', '💖'],
-      emojiSize: 50,
-      confettiNumber: 40,
-    })
-  }, 400)
-}
 
 // --- Smooth Scrolling (Lenis) ---
 function initLenis() {
@@ -285,7 +269,7 @@ function initAnimations() {
   document.querySelectorAll('[data-speed]').forEach(el => {
     const speed = parseFloat(el.getAttribute('data-speed')) || 1
     gsap.to(el, {
-      y: () => (1 - speed) * (ScrollTrigger.maxScroll(window) - ScrollTrigger.maxScroll(window) * 0.5),
+      y: () => (1 - speed) * window.innerHeight * 0.5,
       ease: "none",
       scrollTrigger: {
         trigger: el,
