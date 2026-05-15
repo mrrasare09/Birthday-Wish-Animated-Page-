@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday, Fortune 🤍</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- We'll mix Inter (clean sans) with Playfair Display (elegant serif) for that premium Apple/Editorial feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Background Audio -->
+    <!-- Note: Browsers require user interaction to autoplay audio. We will handle this in JS. -->
+    <audio id="bg-music" loop>
+      <!-- Expecting user to place a track here, fallback provided for now -->
+      <source src="/media/background-track.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Global Controls -->
+    <button id="audio-toggle" class="glass-button">
+      <svg id="icon-play" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      <svg id="icon-pause" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+      <span>Sound</span>
+    </button>
+
+    <!-- Ambient Animated Gradient Background -->
+    <div class="ambient-background">
+      <div class="gradient-sphere sphere-1"></div>
+      <div class="gradient-sphere sphere-2"></div>
+      <div class="gradient-sphere sphere-3"></div>
+      <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero slide-section">
+        <div class="hero-content">
+          <p class="hero-subtitle reveal-text">To the one who makes everything brighter...</p>
+          <h1 class="hero-title">
+            <span class="reveal-text block">Happy Birthday,</span>
+            <span class="reveal-text block highlight-serif">Hermosa.</span>
+          </h1>
+          <p class="hero-scroll-indicator reveal-text delay">Scroll to discover</p>
+        </div>
+      </section>
+
+      <!-- Intro Message Section -->
+      <section class="intro-message slide-section">
+        <div class="container text-center">
+          <h2 class="section-title reveal-text">A Year of <br/>Beautiful Moments</h2>
+          <p class="section-paragraph reveal-text">
+            Every day with you is a gift. This is a small celebration of the light you bring into the world, Fortune.
+          </p>
+        </div>
+      </section>
+
+      <!-- The Memory Gallery (Horizontal Scroll) -->
+      <section class="gallery-wrapper">
+        <div class="gallery-container">
+          <div class="gallery-header">
+            <h2 class="gallery-title reveal-text">Our Memories</h2>
+            <p class="reveal-text">A collection of our favorite times together.</p>
+          </div>
+          <!-- The horizontal scrolling track -->
+          <div class="gallery-track">
+            <!-- We will generate 30 placeholder items here via JS, or hardcode them if user provides them. 
+                 For now, providing the structure. -->
+            <div class="gallery-item-placeholder" id="gallery-items-container">
+               <!-- JS will inject images here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cinematic Highlight Reel -->
+      <section class="highlight-reel slide-section">
+        <div class="container">
+          <div class="reel-header">
+            <h2 class="section-title reveal-text">Moments in Motion</h2>
+          </div>
+          <div class="video-grid">
+            <!-- Placeholders for videos -->
+            <div class="video-card glass-panel reveal-element">
+              <div class="video-placeholder flex-center">Upload Video 1</div>
+            </div>
+            <div class="video-card glass-panel reveal-element">
+              <div class="video-placeholder flex-center">Upload Video 2</div>
+            </div>
+            <div class="video-card glass-panel reveal-element">
+              <div class="video-placeholder flex-center">Upload Video 3</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Finale Message -->
+      <section class="finale slide-section">
+        <div class="finale-content glass-panel reveal-element">
+          <h2 class="finale-title">Here's to many more.</h2>
+          <p class="finale-text">
+            May this year bring you as much joy as you give to everyone around you. You deserve the absolute best, today and always.
+          </p>
+          <p class="finale-signature">With all my love.</p>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
