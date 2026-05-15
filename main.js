@@ -444,6 +444,15 @@ function initAnimations() {
     force3D: true
   }, "-=0.8")
   .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 1, ease: "expo.inOut" }, "-=0.6")
+  .add(() => {
+    // Surprise Initial Pop!
+    const jsConfetti = new JSConfetti()
+    jsConfetti.addConfetti({
+      emojis: ['🎈', '🎉', '✨', '💖'],
+      emojiSize: 40,
+      confettiNumber: 40,
+    })
+  }, "-=0.5")
 
   // 3. Scroll Reveals for split text in other sections
   document.querySelectorAll('.slide-section:not(.hero) .split-text, .slide-section:not(.hero) .split-text-script').forEach((el) => {
@@ -644,9 +653,9 @@ function initFinalePetals() {
       if (!hasTriggered) {
         hasTriggered = true
         jsConfetti.addConfetti({
-          emojis: ['🌹', '❤️', '✨'],
-          emojiSize: 30,
-          confettiNumber: 60,
+          emojis: ['🎈', '🎂', '🎉', '🥳', '🍦', '🎁', '💖'],
+          emojiSize: 40,
+          confettiNumber: 100, // Massive celebratory splash
         })
       }
     }
