@@ -24,6 +24,19 @@ document.addEventListener("DOMContentLoaded", () => {
     initLightbox()
     initLetterModal()
     initFinalePetals()
+    initSwiper()
+  })
+})
+
+// --- Sticky Navigation Smooth Scroll ---
+document.querySelectorAll('.sticky-nav a').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault()
+    const targetId = this.getAttribute('href')
+    const targetSection = document.querySelector(targetId)
+    if (targetSection) {
+      window.lenis.scrollTo(targetSection, { offset: -50 })
+    }
   })
 })
 
@@ -179,16 +192,21 @@ function createParticles() {
 function generateMediaElements() {
   const galleryContainer = document.getElementById('gallery-items-container')
   const videoContainer = document.getElementById('video-grid-container')
+  const heroVideo = document.getElementById('hero-bg-video')
   
   const images = ["19e8720c-3030-43de-a674-4de7cabd1836_Original.jpg", "3D41FF04-CED5-4131-92F1-30652810984F_Original.jpg", "44B006F9-FFEC-4760-B493-D46E670C199C_Original.jpg", "IMG_0796_Original.jpg", "IMG_0911_Original.jpg", "IMG_1220_Original.jpg", "IMG_1473_Original.jpg", "IMG_1515_Original.jpg", "IMG_3394_Original.jpg", "IMG_3396_Original.jpg", "IMG_3830_Original.jpg", "IMG_5926_Original.jpg", "IMG_6725_Original.jpg", "IMG_6831_Original.jpg", "IMG_6832_Original.jpg", "IMG_7428_Original.jpg", "IMG_7432_Original.jpg", "IMG_7917_Original.jpg", "IMG_7928_Original.jpg"]
   
   const videos = ["1AFB0BFC-C8D4-49E4-81C6-564D81AD3D03.mov", "53B61082-114C-43F6-8B14-F69A6DB3F736.mov", "6ABF0AA1-7403-4CC8-806C-8F6DA98E0543.mov", "6D610E71-9531-487A-A825-3800DECBC869.mov", "7552DD72-BB41-49A4-9B0F-94F449B03127.mov", "9B425C3C-E072-4EDC-8A11-6323501035DD.mov", "9B995DE6-026F-4F9A-9136-B954D70A9699.mov", "A9E940C9-1427-408D-A7F0-1CC4AF031A75.mov", "D6EF10CD-2C0D-4A14-B805-06CBF567B4B0.mov", "EEA7EEB7-5A87-4EBB-AC41-35DC51FB24AF.mov", "Snapchat-889795888.mov"]
 
+  if (heroVideo && videos.length > 0) {
+    heroVideo.src = `/media/${videos[0]}`
+  }
+
   if (galleryContainer) {
     images.forEach((imgFile) => {
       const item = document.createElement('div')
-      item.className = 'gallery-item'
-      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;" />`
+      item.className = 'swiper-slide gallery-item'
+      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" loading="lazy" />`
       galleryContainer.appendChild(item)
       
       // Add 3D Tilt Effect
@@ -530,6 +548,31 @@ function initLetterModal() {
 }
 
 import JSConfetti from 'https://cdn.jsdelivr.net/npm/js-confetti@0.12.0/+esm'
+import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.mjs'
+
+function initSwiper() {
+  new Swiper('.gallery-swiper', {
+    effect: 'coverflow',
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: 'auto',
+    coverflowEffect: {
+      rotate: 20,
+      stretch: 0,
+      depth: 200,
+      modifier: 1,
+      slideShadows: true,
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    loop: true,
+    keyboard: {
+      enabled: true
+    }
+  })
+}
 
 function initFinalePetals() {
   const finaleSection = document.querySelector('.finale')

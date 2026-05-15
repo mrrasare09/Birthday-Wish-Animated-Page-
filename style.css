@@ -248,6 +248,54 @@ main {
   border-color: var(--accent-pink);
 }
 
+/* Hero Video Background */
+.hero-bg-video {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.4;
+  filter: blur(8px);
+}
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(253,248,246,0.2) 0%, var(--bg-color) 100%);
+  z-index: 1;
+}
+
+/* Sticky Nav */
+.sticky-nav {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  display: flex;
+  gap: 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 30px rgba(200, 150, 150, 0.1);
+  pointer-events: auto;
+}
+.sticky-nav a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: color 0.3s;
+  cursor: none;
+}
+.sticky-nav a:hover {
+  color: var(--accent-pink);
+}
+
 /* Vinyl Player */
 .vinyl-record {
   width: 20px;
@@ -599,7 +647,34 @@ main {
 .gallery-item:hover img {
   transform: scale(1.06);
 }
-
+/* Premium Footer */
+.premium-footer {
+  padding: 6rem 2rem 4rem;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(to top, rgba(244, 143, 177, 0.05) 0%, transparent 100%);
+}
+.monogram {
+  font-family: var(--font-script);
+  font-size: clamp(3rem, 6vw, 4rem);
+  color: var(--accent-gold);
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+.footer-date {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.footer-signature {
+  font-family: var(--font-script);
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-top: 2rem;
+}
 .gallery-item:hover::after {
   opacity: 1;
 }
