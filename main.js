@@ -194,8 +194,40 @@ function generateMediaElements() {
   const videoContainer = document.getElementById('video-grid-container')
   const heroVideo = document.getElementById('hero-bg-video')
   
-  const images = ["IMG_0749.JPG","IMG_0751.JPG","IMG_1797.JPG","IMG_1811.JPG","IMG_1821.JPG","IMG_2314.jpg","IMG_2452.jpg","IMG_3138.jpg","IMG_4905.jpg","IMG_6586.jpg","IMG_6615.jpg","IMG_7159.jpg","IMG_7162.jpg","IMG_7163.jpg","IMG_7172.jpg","IMG_7408.JPG","IMG_7409.JPG","IMG_7424.JPG","IMG_7428.JPG"]
-  const videos = ["IMG_3148.mov","IMG_3153.mov","IMG_3156.mov","IMG_3157.mov","IMG_3160.mov","IMG_4078.mov","IMG_4079.mov","IMG_5119.mov","IMG_5120.mov","IMG_7160.mov","IMG_7431.mov"]
+  const images = [
+    "19e8720c-3030-43de-a674-4de7cabd1836_Original.jpg",
+    "3D41FF04-CED5-4131-92F1-30652810984F_Original.jpg",
+    "44B006F9-FFEC-4760-B493-D46E670C199C_Original.jpg",
+    "IMG_0796_Original.jpg",
+    "IMG_0911_Original.jpg",
+    "IMG_1220_Original.jpg",
+    "IMG_1473_Original.jpg",
+    "IMG_1515_Original.jpg",
+    "IMG_3394_Original.jpg",
+    "IMG_3396_Original.jpg",
+    "IMG_3830_Original.jpg",
+    "IMG_5926_Original.jpg",
+    "IMG_6725_Original.jpg",
+    "IMG_6831_Original.jpg",
+    "IMG_6832_Original.jpg",
+    "IMG_7428_Original.jpg",
+    "IMG_7432_Original.jpg",
+    "IMG_7917_Original.jpg",
+    "IMG_7928_Original.jpg"
+  ]
+  const videos = [
+    "1AFB0BFC-C8D4-49E4-81C6-564D81AD3D03.mov",
+    "53B61082-114C-43F6-8B14-F69A6DB3F736.mov",
+    "6ABF0AA1-7403-4CC8-806C-8F6DA98E0543.mov",
+    "6D610E71-9531-487A-A825-3800DECBC869.mov",
+    "7552DD72-BB41-49A4-9B0F-94F449B03127.mov",
+    "9B425C3C-E072-4EDC-8A11-6323501035DD.mov",
+    "9B995DE6-026F-4F9A-9136-B954D70A9699.mov",
+    "A9E940C9-1427-408D-A7F0-1CC4AF031A75.mov",
+    "D6EF10CD-2C0D-4A14-B805-06CBF567B4B0.mov",
+    "EEA7EEB7-5A87-4EBB-AC41-35DC51FB24AF.mov",
+    "Snapchat-889795888.mov"
+  ]
 
   if (heroVideo && videos.length > 0) {
     heroVideo.src = `/media/${videos[0]}`
@@ -205,7 +237,7 @@ function generateMediaElements() {
     images.forEach((imgFile) => {
       const item = document.createElement('div')
       item.className = 'swiper-slide gallery-item'
-      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" loading="lazy" />`
+      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" />`
       galleryContainer.appendChild(item)
       
       // Add 3D Tilt Effect
@@ -243,13 +275,16 @@ function generateMediaElements() {
   }
   
   if (videoContainer) {
-    // Optimization: Only play videos when they enter the viewport
+    // Optimization: Only load and play videos when they enter the viewport
     const videoObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const video = entry.target.querySelector('video')
         if (!video) return
         
         if (entry.isIntersecting) {
+          if (!video.src) {
+            video.src = video.dataset.src;
+          }
           const playPromise = video.play()
           if (playPromise !== undefined) {
             playPromise.catch(e => console.warn('Video auto-play blocked:', e))
@@ -258,7 +293,7 @@ function generateMediaElements() {
           video.pause()
         }
       })
-    }, { rootMargin: '200px' })
+    }, { rootMargin: '100px', threshold: 0.1 })
 
     videos.forEach((vidFile, index) => {
       const card = document.createElement('div')
@@ -268,7 +303,7 @@ function generateMediaElements() {
       card.setAttribute('data-speed', speed)
       
       const video = document.createElement('video')
-      video.src = `/media/${vidFile}`
+      video.dataset.src = `/media/${vidFile}`
       video.preload = 'none' // MASSIVE OPTIMIZATION: Prevents browser from downloading 11 massive videos at once
       video.loop = true
       video.muted = true // Must be muted for mobile autoplay
