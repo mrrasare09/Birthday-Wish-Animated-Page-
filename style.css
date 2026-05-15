@@ -187,6 +187,8 @@ body {
   align-items: center;
   text-align: center;
   perspective: 1000px; /* For 3D text effects */
+  justify-content: flex-start;
+  padding-top: 18vh;
 }
 
 .hero-content {
