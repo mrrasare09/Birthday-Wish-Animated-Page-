@@ -3,33 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Happy Birthday, Fortune 🤍</title>
+    <title>Happy Birthday, Babyy! 🤍</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- We'll mix Inter (clean sans) with Playfair Display (elegant serif) for that premium Apple/Editorial feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Modern geometric sans 'Outfit' and elegant romantic script 'Great Vibes' -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@200;300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <!-- Background Audio -->
-    <!-- Note: Browsers require user interaction to autoplay audio. We will handle this in JS. -->
     <audio id="bg-music" loop>
-      <!-- Expecting user to place a track here, fallback provided for now -->
       <source src="/media/background-track.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Global Controls -->
-    <button id="audio-toggle" class="glass-button">
+    <button id="audio-toggle" class="glass-button magnetic">
       <svg id="icon-play" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
       <svg id="icon-pause" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-      <span>Sound</span>
+      <span>Audio</span>
     </button>
 
-    <!-- Ambient Animated Gradient Background -->
+    <!-- Ambient Animated Light Background -->
     <div class="ambient-background">
-      <div class="gradient-sphere sphere-1"></div>
-      <div class="gradient-sphere sphere-2"></div>
-      <div class="gradient-sphere sphere-3"></div>
+      <div class="gradient-orb orb-1"></div>
+      <div class="gradient-orb orb-2"></div>
+      <div class="gradient-orb orb-3"></div>
+      <!-- Floating particles container -->
+      <div id="particles-container"></div>
       <div class="noise-overlay"></div>
     </div>
 
@@ -37,37 +37,41 @@
     <main>
       <!-- Hero Section -->
       <section class="hero slide-section">
-        <div class="hero-content">
-          <p class="hero-subtitle reveal-text">To the one who makes everything brighter...</p>
+        <div class="hero-content" data-speed="0.8">
+          <p class="hero-subtitle split-text">To the love of my life...</p>
           <h1 class="hero-title">
-            <span class="reveal-text block">Happy Birthday,</span>
-            <span class="reveal-text block highlight-serif">Hermosa.</span>
+            <span class="block split-text">Happy Birthday,</span>
+            <span class="block script-text highlight-pink split-text-script">Babyy!</span>
           </h1>
-          <p class="hero-scroll-indicator reveal-text delay">Scroll to discover</p>
+          <div class="scroll-indicator-wrapper">
+            <p class="hero-scroll-indicator split-text delay">Scroll down</p>
+            <div class="scroll-line"></div>
+          </div>
         </div>
       </section>
 
       <!-- Intro Message Section -->
       <section class="intro-message slide-section">
         <div class="container text-center">
-          <h2 class="section-title reveal-text">A Year of <br/>Beautiful Moments</h2>
-          <p class="section-paragraph reveal-text">
-            Every day with you is a gift. This is a small celebration of the light you bring into the world, Fortune.
-          </p>
+          <div class="glass-card float-anim" data-speed="1.1">
+            <h2 class="section-title split-text">My Beautiful Fortune</h2>
+            <p class="section-paragraph">
+              Every single day with you feels like magic. Your smile brightens up my entire world. 
+              Today is all about celebrating you, the most amazing person I know.
+            </p>
+            <div class="decorative-line"></div>
+          </div>
         </div>
       </section>
 
       <!-- The Memory Gallery (Horizontal Scroll) -->
       <section class="gallery-wrapper">
         <div class="gallery-container">
-          <div class="gallery-header">
-            <h2 class="gallery-title reveal-text">Our Memories</h2>
-            <p class="reveal-text">A collection of our favorite times together.</p>
+          <div class="gallery-header" data-speed="0.9">
+            <h2 class="gallery-title split-text">Our Story</h2>
+            <p class="gallery-subtitle split-text">Beautiful moments captured in time.</p>
           </div>
-          <!-- The horizontal scrolling track -->
           <div class="gallery-track">
-            <!-- We will generate 30 placeholder items here via JS, or hardcode them if user provides them. 
-                 For now, providing the structure. -->
             <div class="gallery-item-placeholder" id="gallery-items-container">
                <!-- JS will inject images here -->
             </div>
@@ -78,19 +82,19 @@
       <!-- Cinematic Highlight Reel -->
       <section class="highlight-reel slide-section">
         <div class="container">
-          <div class="reel-header">
-            <h2 class="section-title reveal-text">Moments in Motion</h2>
+          <div class="reel-header text-center">
+            <h2 class="section-title split-text">In Motion</h2>
+            <p class="section-paragraph">Videos that make me fall in love with you over and over.</p>
           </div>
           <div class="video-grid">
-            <!-- Placeholders for videos -->
-            <div class="video-card glass-panel reveal-element">
-              <div class="video-placeholder flex-center">Upload Video 1</div>
+            <div class="video-card glass-panel parallax-card" data-speed="0.95">
+              <div class="video-placeholder flex-center">Video 1</div>
             </div>
-            <div class="video-card glass-panel reveal-element">
-              <div class="video-placeholder flex-center">Upload Video 2</div>
+            <div class="video-card glass-panel parallax-card" data-speed="1.05">
+              <div class="video-placeholder flex-center">Video 2</div>
             </div>
-            <div class="video-card glass-panel reveal-element">
-              <div class="video-placeholder flex-center">Upload Video 3</div>
+            <div class="video-card glass-panel parallax-card" data-speed="0.9">
+              <div class="video-placeholder flex-center">Video 3</div>
             </div>
           </div>
         </div>
@@ -98,12 +102,15 @@
 
       <!-- Finale Message -->
       <section class="finale slide-section">
-        <div class="finale-content glass-panel reveal-element">
-          <h2 class="finale-title">Here's to many more.</h2>
+        <div class="finale-content text-center" data-speed="1.1">
+          <h2 class="finale-title script-text split-text-script">Forever & Always.</h2>
           <p class="finale-text">
-            May this year bring you as much joy as you give to everyone around you. You deserve the absolute best, today and always.
+            I hope your birthday is as beautiful, vibrant, and incredibly special as you are. 
+            I love you so much, Babyy!
           </p>
-          <p class="finale-signature">With all my love.</p>
+          <div class="heart-icon-wrapper">
+             <svg class="heart-icon float-anim" viewBox="0 0 24 24" fill="var(--accent-pink)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
         </div>
       </section>
     </main>
