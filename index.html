@@ -11,6 +11,18 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+      <div class="preloader-content">
+        <div class="preloader-counter">0%</div>
+        <div class="preloader-text">Loading memories...</div>
+      </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
     <!-- Background Audio -->
     <audio id="bg-music" loop>
       <source src="/media/Lord Huron The Night We Met Official Audio.mp3" type="audio/mpeg">
@@ -18,10 +30,33 @@
 
     <!-- Global Controls -->
     <button id="audio-toggle" class="glass-button magnetic">
-      <svg id="icon-play" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-      <svg id="icon-pause" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+      <div class="vinyl-record">
+        <div class="vinyl-grooves"></div>
+        <div class="vinyl-label"></div>
+      </div>
       <span>Audio</span>
     </button>
+
+    <!-- Photo Lightbox -->
+    <div id="lightbox" class="lightbox">
+      <div class="lightbox-bg"></div>
+      <img id="lightbox-img" src="" alt="Enlarged memory">
+      <button id="lightbox-close" class="glass-button magnetic">Close</button>
+    </div>
+
+    <!-- Hidden Letter Modal -->
+    <div id="letter-modal" class="letter-modal">
+      <div class="letter-modal-bg"></div>
+      <div class="letter-content glass-card">
+        <button id="letter-close" class="close-icon">&times;</button>
+        <h3 class="script-text highlight-pink text-center" style="font-size: 3rem; margin-bottom: 1rem;">To my beautiful Fortune,</h3>
+        <p class="letter-text">
+          I wanted to hide this little note here just for you.<br><br>
+          Every day I spend with you is a gift. You are my peace, my joy, and my favorite adventure. I built this page to show you a fraction of how much you mean to me, but words and pictures will never be enough to express my love for you.<br><br>
+          Happy Birthday, baby. Here is to a million more memories together. 🤍
+        </p>
+      </div>
+    </div>
 
     <!-- Ambient Animated Light Background -->
     <div class="ambient-background">
@@ -43,6 +78,13 @@
             <span class="block split-text">Happy Birthday,</span>
             <span class="block script-text highlight-pink split-text-script">Babyy!</span>
           </h1>
+          <!-- Relationship Timeline -->
+          <div class="timeline-container fade-in-up delay-2">
+            <p class="timeline-label">Loving you for</p>
+            <div id="timeline-counter" class="timeline-counter">
+              <span id="t-days">0</span>d : <span id="t-hours">0</span>h : <span id="t-mins">0</span>m : <span id="t-secs">0</span>s
+            </div>
+          </div>
           <div class="scroll-indicator-wrapper">
             <p class="hero-scroll-indicator split-text delay">Scroll down</p>
             <div class="scroll-line"></div>
@@ -98,6 +140,10 @@
           </p>
           <div class="heart-icon-wrapper">
              <svg class="heart-icon float-anim" viewBox="0 0 24 24" fill="var(--accent-pink)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <!-- Hidden Envelope Easter Egg -->
+          <div class="easter-egg-wrapper mt-4">
+             <svg id="open-letter-btn" class="envelope-icon magnetic" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" stroke-width="1.5"><path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke-linecap="round"/></svg>
           </div>
         </div>
       </section>

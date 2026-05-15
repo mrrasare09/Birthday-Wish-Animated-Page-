@@ -12,10 +12,111 @@ document.addEventListener("DOMContentLoaded", () => {
   initLenis()
   createParticles()
   generateMediaElements()
-  initAudio()
-  initMagneticButton()
-  initAnimations()
+  initCustomCursor()
+  initAmbientMouseTracking()
+  
+  // Start Preloader first, then initialize the rest
+  runPreloader(() => {
+    initAudio()
+    initMagneticButton()
+    initAnimations()
+    initTimeline()
+    initLightbox()
+    initLetterModal()
+    initFinalePetals()
+  })
 })
+
+// --- Custom Cursor ---
+function initCustomCursor() {
+  const dot = document.querySelector('.cursor-dot')
+  const outline = document.querySelector('.cursor-outline')
+  if (!dot || !outline) return
+
+  window.addEventListener('mousemove', (e) => {
+    const posX = e.clientX
+    const posY = e.clientY
+    
+    // Fast update for dot
+    dot.style.left = `${posX}px`
+    dot.style.top = `${posY}px`
+    
+    // Smooth trailing update for outline
+    outline.animate({
+      left: `${posX}px`,
+      top: `${posY}px`
+    }, { duration: 500, fill: "forwards" })
+  })
+
+  // Add hover states for all interactive cards
+  const interactiveElements = document.querySelectorAll('.gallery-item, .video-card, .glass-button')
+  
+  interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      outline.classList.add('hover-active')
+      dot.style.opacity = '0'
+    })
+    el.addEventListener('mouseleave', () => {
+      outline.classList.remove('hover-active')
+      dot.style.opacity = '1'
+    })
+  })
+}
+
+// --- Preloader ---
+function runPreloader(onComplete) {
+  const preloader = document.getElementById('preloader')
+  const counter = document.querySelector('.preloader-counter')
+  
+  if (!preloader || !counter) {
+    onComplete()
+    return
+  }
+
+  let progress = { value: 0 }
+  
+  gsap.to(progress, {
+    value: 100,
+    duration: 2.5, // 2.5 seconds loading sequence
+    ease: "power2.inOut",
+    onUpdate: () => {
+      counter.innerText = Math.round(progress.value) + "%"
+    },
+    onComplete: () => {
+      // Fade out preloader
+      gsap.to(preloader, {
+        opacity: 0,
+        y: -50,
+        duration: 0.8,
+        ease: "power3.inOut",
+        onComplete: () => {
+          preloader.style.display = 'none'
+          onComplete() // Trigger the rest of the site animations
+        }
+      })
+    }
+  })
+}
+
+// --- Ambient Mouse Tracking ---
+function initAmbientMouseTracking() {
+  const orbs = document.querySelectorAll('.gradient-orb')
+  
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 100 // -50 to 50
+    const y = (e.clientY / window.innerHeight - 0.5) * 100
+    
+    orbs.forEach((orb, index) => {
+      const speed = (index + 1) * 0.2 // different speeds for depth
+      gsap.to(orb, {
+        x: x * speed,
+        y: y * speed,
+        duration: 2,
+        ease: "power2.out"
+      })
+    })
+  })
+}
 
 // --- Smooth Scrolling (Lenis) ---
 function initLenis() {
@@ -37,33 +138,35 @@ function initLenis() {
   gsap.ticker.lagSmoothing(0)
 }
 
-// --- Floating Particles ---
+// --- Floating Stardust Particles ---
 function createParticles() {
   const container = document.getElementById('particles-container')
   if (!container) return
   
-  const particleCount = 20 // reduced for performance
+  const particleCount = 40 // Increased for richness
   
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('div')
     particle.className = 'particle'
     
-    // Randomize size, position, and opacity
-    const size = Math.random() * 8 + 2
+    // Randomize size heavily for depth (tiny to small)
+    const size = Math.random() * 4 + 1 
     particle.style.width = `${size}px`
     particle.style.height = `${size}px`
     particle.style.left = `${Math.random() * 100}vw`
     particle.style.top = `${Math.random() * 100}vh`
-    particle.style.opacity = Math.random() * 0.5 + 0.1
+    
+    // Richer opacity
+    particle.style.opacity = Math.random() * 0.8 + 0.2
     
     container.appendChild(particle)
     
-    // Animate them independently
+    // Slower, more majestic drift
     gsap.to(particle, {
-      y: `-=${Math.random() * 200 + 100}`,
+      y: `-=${Math.random() * 300 + 100}`,
       x: `+=${Math.random() * 100 - 50}`,
       rotation: Math.random() * 360,
-      duration: Math.random() * 10 + 10,
+      duration: Math.random() * 15 + 15, // Much slower for cinematic feel
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -123,6 +226,23 @@ function generateMediaElements() {
   }
   
   if (videoContainer) {
+    // Optimization: Only play videos when they enter the viewport
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target.querySelector('video')
+        if (!video) return
+        
+        if (entry.isIntersecting) {
+          const playPromise = video.play()
+          if (playPromise !== undefined) {
+            playPromise.catch(e => console.warn('Video auto-play blocked:', e))
+          }
+        } else {
+          video.pause()
+        }
+      })
+    }, { rootMargin: '200px' })
+
     videos.forEach((vidFile, index) => {
       const card = document.createElement('div')
       // Alternate parallax speeds
@@ -132,7 +252,7 @@ function generateMediaElements() {
       
       const video = document.createElement('video')
       video.src = `/media/${vidFile}`
-      video.autoplay = true
+      video.preload = 'none' // MASSIVE OPTIMIZATION: Prevents browser from downloading 11 massive videos at once
       video.loop = true
       video.muted = true // Must be muted for mobile autoplay
       video.playsInline = true
@@ -143,14 +263,9 @@ function generateMediaElements() {
       video.style.borderRadius = 'inherit'
       video.style.display = 'block'
       
-      // Force play request
-      const playPromise = video.play()
-      if (playPromise !== undefined) {
-        playPromise.catch(e => console.warn('Video auto-play blocked:', e))
-      }
-      
       card.appendChild(video)
       videoContainer.appendChild(card)
+      videoObserver.observe(card)
     })
   }
 }
@@ -159,44 +274,36 @@ function generateMediaElements() {
 function initAudio() {
   const audioToggle = document.getElementById('audio-toggle')
   const bgMusic = document.getElementById('bg-music')
-  const iconPlay = document.getElementById('icon-play')
-  const iconPause = document.getElementById('icon-pause')
+  const vinyl = document.querySelector('.vinyl-record')
 
   let isPlaying = false
 
-  if (audioToggle && bgMusic) {
+  if (audioToggle && bgMusic && vinyl) {
     const startAudio = () => {
       if (isPlaying) return
       const playPromise = bgMusic.play()
       if (playPromise !== undefined) {
         playPromise.then(() => {
           isPlaying = true
-          iconPause.style.display = 'block'
-          iconPlay.style.display = 'none'
-          // Remove event listeners once playing successfully
+          vinyl.classList.add('playing')
           document.removeEventListener('click', startAudio)
           document.removeEventListener('touchstart', startAudio)
         }).catch(e => console.warn("Audio play blocked by browser:", e))
       }
     }
 
-    // Try to auto-play immediately (browsers usually block this)
     startAudio()
-
-    // Add interaction listeners: play music on first click or touch anywhere!
     document.addEventListener('click', startAudio)
     document.addEventListener('touchstart', startAudio)
     
     audioToggle.addEventListener('click', (e) => {
-      e.stopPropagation() // Prevent triggering the document click
+      e.stopPropagation() 
       if (isPlaying) {
         bgMusic.pause()
-        iconPause.style.display = 'none'
-        iconPlay.style.display = 'block'
+        vinyl.classList.remove('playing')
       } else {
         bgMusic.play().catch(e => console.warn("Audio play blocked:", e))
-        iconPause.style.display = 'block'
-        iconPlay.style.display = 'none'
+        vinyl.classList.add('playing')
       }
       isPlaying = !isPlaying
     })
@@ -239,32 +346,32 @@ function initAnimations() {
   const standardText = new SplitType('.split-text', { types: 'lines, words, chars' })
   const scriptText = new SplitType('.split-text-script', { types: 'chars' })
   
-  // Hide chars initially for reveal
-  gsap.set(standardText.chars, { opacity: 0, y: 50, rotateX: -90 })
+  // Advanced Clipping Mask Initial State: Text is hidden "below" the line
+  gsap.set(standardText.chars, { opacity: 0, y: "110%", rotateX: -90 })
   gsap.set(scriptText.chars, { opacity: 0, scale: 0, rotation: -15 })
 
-  // 2. Hero Reveal
+  // 2. Hero Reveal (Triggered immediately after preloader)
   const tlHero = gsap.timeline({ delay: 0.1 })
   
   tlHero.to('.hero .split-text .char', {
     opacity: 1,
-    y: 0,
+    y: "0%",
     rotateX: 0,
-    duration: 0.6,
-    stagger: 0.015,
-    ease: "power3.out",
+    duration: 0.8,
+    stagger: 0.02,
+    ease: "power4.out",
     force3D: true
   })
   .to('.hero .split-text-script .char', {
     opacity: 1,
     scale: 1,
     rotation: 0,
-    duration: 0.8,
-    stagger: 0.03,
+    duration: 1,
+    stagger: 0.04,
     ease: "back.out(1.5)",
     force3D: true
-  }, "-=0.3")
-  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power2.out" }, "-=0.3")
+  }, "-=0.4")
+  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "power2.out" }, "-=0.4")
 
   // 3. Scroll Reveals for split text in other sections
   document.querySelectorAll('.slide-section:not(.hero) .split-text').forEach((el) => {
@@ -275,11 +382,11 @@ function initAnimations() {
         start: "top 85%",
       },
       opacity: 1,
-      y: 0,
+      y: "0%",
       rotateX: 0,
-      duration: 0.6,
-      stagger: 0.015,
-      ease: "power3.out",
+      duration: 0.8,
+      stagger: 0.02,
+      ease: "power4.out",
       force3D: true
     })
   })
@@ -294,8 +401,8 @@ function initAnimations() {
       opacity: 1,
       scale: 1,
       rotation: 0,
-      duration: 0.8,
-      stagger: 0.03,
+      duration: 1,
+      stagger: 0.04,
       ease: "back.out(1.5)",
       force3D: true
     })
@@ -340,4 +447,109 @@ function initAnimations() {
       })
     }, 200)
   }
+}
+
+// --- Final Wow Features ---
+
+function initTimeline() {
+  // Set this to the date they met or started dating (Year, Month (0-indexed), Day)
+  // For example: Feb 14, 2023 -> new Date(2023, 1, 14)
+  const startDate = new Date(2023, 0, 1) // Default placeholder
+  
+  const daysEl = document.getElementById('t-days')
+  const hoursEl = document.getElementById('t-hours')
+  const minsEl = document.getElementById('t-mins')
+  const secsEl = document.getElementById('t-secs')
+
+  if (!daysEl) return
+
+  setInterval(() => {
+    const now = new Date()
+    const diff = now - startDate
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24)
+    const mins = Math.floor((diff / 1000 / 60) % 60)
+    const secs = Math.floor((diff / 1000) % 60)
+    
+    daysEl.innerText = days
+    hoursEl.innerText = hours.toString().padStart(2, '0')
+    minsEl.innerText = mins.toString().padStart(2, '0')
+    secsEl.innerText = secs.toString().padStart(2, '0')
+  }, 1000)
+}
+
+function initLightbox() {
+  const lightbox = document.getElementById('lightbox')
+  const lightboxImg = document.getElementById('lightbox-img')
+  const closeBtn = document.getElementById('lightbox-close')
+  
+  if (!lightbox) return
+
+  // Need to wait slightly for dynamic images to generate
+  setTimeout(() => {
+    const images = document.querySelectorAll('.gallery-item img')
+    images.forEach(img => {
+      img.style.cursor = 'pointer' // Override the 'none' cursor for the images so they know they can click
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src
+        lightbox.classList.add('active')
+      })
+    })
+  }, 1000)
+
+  const closeLightbox = () => lightbox.classList.remove('active')
+  
+  closeBtn.addEventListener('click', closeLightbox)
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target.classList.contains('lightbox-bg')) {
+      closeLightbox()
+    }
+  })
+}
+
+function initLetterModal() {
+  const modal = document.getElementById('letter-modal')
+  const openBtn = document.getElementById('open-letter-btn')
+  const closeBtn = document.getElementById('letter-close')
+  
+  if (!modal || !openBtn) return
+
+  openBtn.addEventListener('click', () => {
+    modal.classList.add('active')
+  })
+  
+  const closeModal = () => modal.classList.remove('active')
+  
+  closeBtn.addEventListener('click', closeModal)
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target.classList.contains('letter-modal-bg')) {
+      closeModal()
+    }
+  })
+}
+
+import JSConfetti from 'https://cdn.jsdelivr.net/npm/js-confetti@0.12.0/+esm'
+
+function initFinalePetals() {
+  const finaleSection = document.querySelector('.finale')
+  if (!finaleSection) return
+  
+  const jsConfetti = new JSConfetti()
+  let hasTriggered = false
+
+  ScrollTrigger.create({
+    trigger: finaleSection,
+    start: "top 60%",
+    onEnter: () => {
+      if (!hasTriggered) {
+        hasTriggered = true
+        jsConfetti.addConfetti({
+          emojis: ['🌹', '❤️', '✨'],
+          emojiSize: 30,
+          confettiNumber: 60,
+        })
+      }
+    }
+  })
 }
