@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger)
 document.addEventListener("DOMContentLoaded", () => {
   initLenis()
   createParticles()
-  generateGalleryPlaceholders()
+  generateMediaElements()
   initAudio()
   initMagneticButton()
   initAnimations()
@@ -88,51 +88,68 @@ function createParticles() {
   }
 }
 
-// --- Dynamic Gallery Generation & 3D Hover ---
-function generateGalleryPlaceholders() {
-  const container = document.getElementById('gallery-items-container')
-  if (!container) return
+// --- Dynamic Media Generation & 3D Hover ---
+function generateMediaElements() {
+  const galleryContainer = document.getElementById('gallery-items-container')
+  const videoContainer = document.getElementById('video-grid-container')
+  
+  const images = ["19e8720c-3030-43de-a674-4de7cabd1836_Original.jpg", "3D41FF04-CED5-4131-92F1-30652810984F_Original.jpg", "44B006F9-FFEC-4760-B493-D46E670C199C_Original.jpg", "IMG_0796_Original.jpg", "IMG_0911_Original.jpg", "IMG_1220_Original.jpg", "IMG_1473_Original.jpg", "IMG_1515_Original.jpg", "IMG_3394_Original.jpg", "IMG_3396_Original.jpg", "IMG_3830_Original.jpg", "IMG_5926_Original.jpg", "IMG_6725_Original.jpg", "IMG_6831_Original.jpg", "IMG_6832_Original.jpg", "IMG_7428_Original.jpg", "IMG_7432_Original.jpg", "IMG_7917_Original.jpg", "IMG_7928_Original.jpg"]
+  
+  const videos = ["1AFB0BFC-C8D4-49E4-81C6-564D81AD3D03.mov", "53B61082-114C-43F6-8B14-F69A6DB3F736.mov", "6ABF0AA1-7403-4CC8-806C-8F6DA98E0543.mov", "6D610E71-9531-487A-A825-3800DECBC869.mov", "7552DD72-BB41-49A4-9B0F-94F449B03127.mov", "9B425C3C-E072-4EDC-8A11-6323501035DD.mov", "9B995DE6-026F-4F9A-9136-B954D70A9699.mov", "A9E940C9-1427-408D-A7F0-1CC4AF031A75.mov", "D6EF10CD-2C0D-4A14-B805-06CBF567B4B0.mov", "EEA7EEB7-5A87-4EBB-AC41-35DC51FB24AF.mov", "Snapchat-889795888.mov"]
 
-  for (let i = 1; i <= 30; i++) {
-    const item = document.createElement('div')
-    item.className = 'gallery-item'
-    
-    item.innerHTML = `
-      <div class="gallery-item-placeholder-text">Media ${i}</div>
-      <!-- <img src="/media/${i}.jpg" alt="Memory ${i}" loading="lazy" /> -->
-    `
-    container.appendChild(item)
-    
-    // Add 3D Tilt Effect
-    item.addEventListener('mousemove', (e) => {
-      const rect = item.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+  if (galleryContainer) {
+    images.forEach((imgFile) => {
+      const item = document.createElement('div')
+      item.className = 'gallery-item'
+      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;" />`
+      galleryContainer.appendChild(item)
       
-      const centerX = rect.width / 2
-      const centerY = rect.height / 2
+      // Add 3D Tilt Effect
+      item.addEventListener('mousemove', (e) => {
+        const rect = item.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        
+        const centerX = rect.width / 2
+        const centerY = rect.height / 2
+        
+        const rotateX = ((y - centerY) / centerY) * -15 // max 15 deg tilt
+        const rotateY = ((x - centerX) / centerX) * 10
+        
+        gsap.to(item, {
+          rotationX: rotateX,
+          rotationY: rotateY,
+          transformPerspective: 1000,
+          ease: "power2.out",
+          duration: 0.4,
+          force3D: true
+        })
+      })
       
-      const rotateX = ((y - centerY) / centerY) * -15 // max 15 deg tilt
-      const rotateY = ((x - centerX) / centerX) * 10
-      
-      gsap.to(item, {
-        rotationX: rotateX,
-        rotationY: rotateY,
-        transformPerspective: 1000,
-        ease: "power2.out",
-        duration: 0.4,
-        force3D: true
+      item.addEventListener('mouseleave', () => {
+        gsap.to(item, {
+          rotationX: 0,
+          rotationY: 0,
+          ease: "power2.out",
+          duration: 0.4,
+          force3D: true
+        })
       })
     })
-    
-    item.addEventListener('mouseleave', () => {
-      gsap.to(item, {
-        rotationX: 0,
-        rotationY: 0,
-        ease: "power2.out",
-        duration: 0.4,
-        force3D: true
-      })
+  }
+  
+  if (videoContainer) {
+    videos.forEach((vidFile, index) => {
+      const card = document.createElement('div')
+      // Alternate parallax speeds
+      const speed = index % 2 === 0 ? 0.95 : 1.05
+      card.className = 'video-card glass-panel parallax-card'
+      card.setAttribute('data-speed', speed)
+      
+      card.innerHTML = `
+        <video src="/media/${vidFile}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;"></video>
+      `
+      videoContainer.appendChild(card)
     })
   }
 }
