@@ -413,77 +413,82 @@ function initAnimations() {
   gsap.set('.hero .split-text .char', { opacity: 0, y: "110%", rotateX: -90 })
   gsap.set('.hero .split-text-script .char', { opacity: 0, scale: 0, rotation: -15 })
 
-  // Hero Reveal (Triggered immediately after preloader)
+  // 2. Hero Reveal (Triggered immediately after preloader)
   const tlHero = gsap.timeline({ delay: 0.1 })
   
   tlHero.to('.hero .split-text .char', {
     opacity: 1,
     y: "0%",
     rotateX: 0,
-    duration: 0.8,
+    duration: 1.2,
     stagger: 0.02,
-    ease: "power4.out",
+    ease: "expo.out",
     force3D: true
   })
   .to('.hero .split-text-script .char', {
     opacity: 1,
     scale: 1,
     rotation: 0,
-    duration: 1,
-    stagger: 0.04,
-    ease: "back.out(1.5)",
+    duration: 1.4,
+    stagger: 0.05,
+    ease: "back.out(1.7)",
     force3D: true
-  }, "-=0.4")
-  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "power2.out" }, "-=0.4")
+  }, "-=0.8")
+  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 1, ease: "expo.inOut" }, "-=0.6")
 
   // 3. Scroll Reveals for split text in other sections
-  // Using fromTo so chars are only hidden when the trigger fires —
-  // text is NEVER permanently invisible if a trigger misfires.
-  document.querySelectorAll('.slide-section:not(.hero) .split-text').forEach((el) => {
+  document.querySelectorAll('.slide-section:not(.hero) .split-text, .slide-section:not(.hero) .split-text-script').forEach((el) => {
     const chars = el.querySelectorAll('.char')
     if (!chars.length) return
-    gsap.fromTo(chars,
-      { opacity: 0, y: "110%", rotateX: -90 },
+    
+    gsap.fromTo(chars, 
+      { opacity: 0, y: 40, rotateX: -20 }, 
       {
-        scrollTrigger: { trigger: el, start: "top 95%", once: true },
         opacity: 1,
-        y: "0%",
+        y: 0,
         rotateX: 0,
-        duration: 0.8,
+        duration: 1,
         stagger: 0.02,
-        ease: "power4.out",
-        force3D: true
+        ease: "expo.out",
+        immediateRender: false, // CRITICAL: Only hide the text when it actually enters the view
+        scrollTrigger: {
+          trigger: el,
+          start: "top 92%",
+          toggleActions: "play none none none"
+        }
       }
     )
   })
 
-  document.querySelectorAll('.slide-section:not(.hero) .split-text-script').forEach((el) => {
-    const chars = el.querySelectorAll('.char')
-    if (!chars.length) return
-    gsap.fromTo(chars,
-      { opacity: 0, scale: 0, rotation: -15 },
+  // 4. Media Card Reveals (Scale & Fade)
+  document.querySelectorAll('.gallery-item, .video-card').forEach((el) => {
+    gsap.fromTo(el,
+      { opacity: 0, scale: 0.9, y: 40 },
       {
-        scrollTrigger: { trigger: el, start: "top 95%", once: true },
         opacity: 1,
         scale: 1,
-        rotation: 0,
-        duration: 1,
-        stagger: 0.04,
-        ease: "back.out(1.5)",
-        force3D: true
+        y: 0,
+        duration: 1.2,
+        ease: "expo.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 95%",
+          once: true
+        }
       }
     )
   })
 
-  // 4. Paragraph & non-split text fade-in reveals
+  // 5. Paragraph & non-split text fade-in reveals
   document.querySelectorAll('.section-paragraph, .decorative-line, .timeline-container').forEach((el) => {
     gsap.fromTo(el,
       { opacity: 0, y: 30 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.9,
-        ease: "power3.out",
+        duration: 1.2,
+        ease: "expo.out",
+        immediateRender: false,
         scrollTrigger: {
           trigger: el,
           start: "top 95%",

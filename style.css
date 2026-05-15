@@ -1,26 +1,26 @@
 :root {
-  /* Colors - Rich Cinematic Romantic Theme */
-  --bg-color: #fdf8f6; /* Warmer cream blush */
-  --text-primary: #2d2424;
-  --text-secondary: #8c7a7a;
-  --accent-pink: #f48fb1;
-  --accent-peach: #ffb7b2;
-  --accent-gold: #e2c08d;
+  /* Colors - Premium Soft Bright Pink Theme */
+  --bg-color: #fff9fb; /* Ultra-clean soft pink white */
+  --text-primary: #332126; /* Deep berry-brown for maximum legibility */
+  --text-secondary: #7a6167;
+  --accent-pink: #ff6b9d; /* Soft Bright Pink */
+  --accent-peach: #ffd1d1;
+  --accent-gold: #d4a373;
   
-  /* Richer Cinematic Orbs */
-  --orb-1: rgba(255, 126, 165, 0.5); /* Deeper Pink */
-  --orb-2: rgba(255, 160, 150, 0.4); /* Deeper Peach */
-  --orb-3: rgba(235, 185, 115, 0.35); /* Warmer Gold */
+  /* Cinematic Orbs — Adjusted for Soft Bright Pink */
+  --orb-1: rgba(255, 107, 157, 0.15);
+  --orb-2: rgba(255, 182, 193, 0.12);
+  --orb-3: rgba(255, 209, 209, 0.10);
   
   /* Typography */
   --font-sans: 'Outfit', sans-serif;
   --font-script: 'Great Vibes', cursive;
   
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-blur: blur(16px);
-  --glass-shadow: 0 8px 32px 0 rgba(227, 203, 203, 0.2);
+  /* Glassmorphism 2.0 - Apple Inspired */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-blur: blur(24px);
+  --glass-shadow: 0 20px 40px rgba(255, 107, 157, 0.08);
 }
 
 /* Custom Cursor */
@@ -33,7 +33,7 @@
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
-  z-index: 9999;
+  z-index: 10002; /* Above noise */
   pointer-events: none;
   transition: width 0.3s, height 0.3s, background-color 0.3s;
 }
@@ -47,7 +47,7 @@
   top: 0;
   left: 0;
   transform: translate(-50%, -50%);
-  z-index: 9998;
+  z-index: 10001; /* Above noise */
   pointer-events: none;
   transition: width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s;
 }
@@ -126,6 +126,20 @@ body {
   cursor: none; /* Hide default cursor for custom cursor */
 }
 
+/* Subtle Premium Grain Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03; /* Ultra-subtle texture */
+  z-index: 10000;
+  pointer-events: none;
+}
+
 main {
   position: relative;
   z-index: 1;
@@ -155,6 +169,9 @@ main {
   z-index: -1;
   overflow: hidden;
   background-color: var(--bg-color);
+  display: block; 
+  opacity: 0.8;
+  pointer-events: none; /* Ensure orbs never block text interaction */
 }
 
 .gradient-orb {
@@ -204,14 +221,14 @@ main {
   100% { transform: translate(-10%, -5%) scale(0.9); }
 }
 
-/* Glass UI Components - Richer frosted effect */
+/* Glass UI Components - Apple Inspired */
 .glass-panel, .glass-card {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 30px 60px rgba(230, 160, 160, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.5);
-  border-radius: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur) saturate(180%);
+  -webkit-backdrop-filter: var(--glass-blur) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 32px;
   will-change: transform;
 }
 
@@ -254,32 +271,22 @@ main {
   top: 0; left: 0; width: 100%; height: 100%;
   object-fit: cover;
   z-index: 0;
-  opacity: 0.4;
+  opacity: 0.3; /* More subtle */
   filter: blur(8px);
+  display: block; /* Restored */
 }
 .hero-bg-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, rgba(253,248,246,0.2) 0%, var(--bg-color) 100%);
   z-index: 1;
+  display: block;
+  pointer-events: none; /* Prevents overlay from 'covering' text */
 }
 
 /* Sticky Nav */
 .sticky-nav {
-  position: fixed;
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9000;
-  display: flex;
-  gap: 2rem;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  padding: 1rem 2.5rem;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 30px rgba(200, 150, 150, 0.1);
-  pointer-events: auto;
+  display: none;
 }
 .sticky-nav a {
   text-decoration: none;
@@ -436,6 +443,8 @@ main {
   justify-content: center;
   padding: 8rem 0;
   position: relative;
+  /* Prevent ambient orbs from washing out text */
+  isolation: isolate;
 }
 
 /* Hero Section */
@@ -453,6 +462,8 @@ main {
   position: relative;
   z-index: 2;
   width: 100%;
+  /* Ensure hero text always sits above the video/overlay */
+  isolation: isolate;
 }
 
 .hero-title {
@@ -461,6 +472,8 @@ main {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 1.5rem;
+  /* Hard shadow so title pops over the hero video */
+  text-shadow: 0 2px 20px rgba(45, 36, 36, 0.15);
 }
 
 .hero-subtitle {
@@ -469,6 +482,7 @@ main {
   font-weight: 300;
   letter-spacing: 0.1em;
   margin-bottom: 2rem;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
 }
 
 /* Timeline */
@@ -519,16 +533,17 @@ main {
 
 /* Intro Section */
 .section-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #c76f8b 0%, #f48fb1 50%, #c76f8b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: shine 6s linear infinite;
+  font-size: clamp(2.5rem, 6vw, 4.5rem); /* Slightly larger for impact */
+  font-weight: 600;
+  line-height: 1.1; /* Tighter leading for cinematic feel */
+  letter-spacing: -0.03em;
+  margin: 0 auto 2rem;
+  max-width: 85%; /* Better line breaking */
+  color: var(--accent-pink);
+  position: relative;
+  z-index: 100;
+  filter: drop-shadow(0 2px 4px rgba(255, 107, 157, 0.2));
+  text-align: center;
 }
 
 @keyframes shine {
@@ -570,15 +585,15 @@ main {
 }
 
 .gallery-title {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #c76f8b 0%, #f48fb1 50%, #c76f8b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: shine 6s linear infinite;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--accent-pink);
+  position: relative;
+  z-index: 100;
+  filter: drop-shadow(0 2px 4px rgba(255, 107, 157, 0.2));
+  max-width: 90%;
 }
 
 .gallery-subtitle {
@@ -647,11 +662,15 @@ main {
 }
 /* Premium Footer */
 .premium-footer {
-  padding: 6rem 2rem 4rem;
+  padding: 8rem 2rem 6rem;
   text-align: center;
   position: relative;
   z-index: 10;
-  background: linear-gradient(to top, rgba(244, 143, 177, 0.05) 0%, transparent 100%);
+  background: linear-gradient(to top, rgba(255, 107, 157, 0.05) 0%, transparent 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  mask-image: linear-gradient(to top, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
 }
 .monogram {
   font-family: var(--font-script);
@@ -659,6 +678,14 @@ main {
   color: var(--accent-gold);
   opacity: 0.9;
   margin-bottom: 1rem;
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: default;
+}
+.monogram:hover {
+  transform: scale(1.08) translateY(-5px);
+  color: var(--accent-pink);
+  filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.3));
 }
 .footer-date {
   font-family: var(--font-sans);
@@ -810,9 +837,9 @@ main {
 
 /* SplitType advanced clipping mask */
 .split-text .line {
-  overflow: hidden; /* Clips the text as it translates up */
-  padding-bottom: 0.2em; /* Prevents descenders like 'y' or 'g' from being cut off early */
-  margin-bottom: -0.2em;
+  overflow: hidden; /* Restored with safety padding */
+  padding-bottom: 0.3em; 
+  margin-bottom: -0.3em;
 }
 
 .char {
