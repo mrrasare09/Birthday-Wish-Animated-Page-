@@ -188,7 +188,7 @@ body {
   text-align: center;
   perspective: 1000px; /* For 3D text effects */
   justify-content: flex-start;
-  padding-top: 18vh;
+  padding: 4rem 0 0 0; /* Overrides .slide-section padding to push to very top */
 }
 
 .hero-content {
@@ -260,7 +260,7 @@ body {
 /* Gallery Section (Horizontal Scroll) */
 .gallery-wrapper {
   overflow: hidden;
-  padding: 8rem 0;
+  padding: 6rem 0;
 }
 
 .gallery-container {
@@ -277,89 +277,161 @@ body {
 }
 
 .gallery-title {
-  font-size: 3.5rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .gallery-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-weight: 300;
 }
 
 .gallery-track {
   display: flex;
-  padding: 0 4rem;
-  gap: 3rem;
+  padding: 2rem 4rem;
+  gap: 2rem;
   width: max-content;
-  perspective: 1000px;
+  perspective: 1200px;
+  align-items: center; /* Baseline-aligns the staggered cards */
 }
 
 #gallery-items-container {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
+  align-items: center;
 }
 
+/* Stagger every other card's height for editorial feel */
 .gallery-item {
-  width: 320px;
-  height: 450px;
+  width: 300px;
+  height: 420px;
   border-radius: 20px;
   background: var(--glass-bg);
   border: 1px solid rgba(255,255,255,0.9);
-  box-shadow: 0 15px 35px rgba(200, 150, 150, 0.1);
+  box-shadow: 0 20px 50px rgba(200, 150, 150, 0.15);
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
 }
 
-.gallery-item img, .gallery-item video {
+.gallery-item:nth-child(even) {
+  height: 340px; /* Shorter alternate cards for rhythm */
+}
+
+.gallery-item:nth-child(3n) {
+  height: 480px; /* Taller every 3rd card for variety */
+}
+
+.gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  display: block;
+}
+
+/* Romantic gradient overlay on hover */
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(244, 143, 177, 0.3) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 .gallery-item:hover img {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
-.gallery-item-placeholder-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 500;
+.gallery-item:hover::after {
+  opacity: 1;
 }
 
 /* Video Highlight Reel */
 .highlight-reel {
-  background: linear-gradient(to bottom, transparent, rgba(255,183,178,0.1), transparent);
+  background: linear-gradient(to bottom, transparent, rgba(255, 183, 178, 0.08), transparent);
+  padding: 8rem 0;
 }
 
+.reel-header {
+  margin-bottom: 4rem;
+}
+
+/* Cinematic bento-style video grid */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
-  margin-top: 4rem;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: auto;
+  gap: 1.5rem;
+  margin-top: 0;
+}
+
+/* Every odd video is full-width featured */
+.video-card:nth-child(odd) {
+  grid-column: 1;
+}
+
+.video-card:nth-child(even) {
+  grid-column: 2;
+}
+
+/* Every 5th video spans full width for dramatic effect */
+.video-card:nth-child(5n) {
+  grid-column: 1 / -1;
+  aspect-ratio: 21/9;
 }
 
 .video-card {
-  aspect-ratio: 16/9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  aspect-ratio: 9/16;
+  display: block;
   overflow: hidden;
   position: relative;
-  border-radius: 24px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(200, 150, 150, 0.15);
+  background: rgba(250, 230, 230, 0.3);
+  cursor: pointer;
 }
 
-.video-placeholder {
-  color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 1.1rem;
+.video-card video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.video-card:hover video {
+  transform: scale(1.03);
+}
+
+/* Soft pink gradient overlay on video cards */
+.video-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(244, 143, 177, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@media (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+  .video-card:nth-child(odd),
+  .video-card:nth-child(even),
+  .video-card:nth-child(5n) {
+    grid-column: 1;
+    aspect-ratio: 9/16;
+  }
 }
 
 /* Finale */
