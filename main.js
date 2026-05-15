@@ -130,9 +130,26 @@ function generateMediaElements() {
       card.className = 'video-card glass-panel parallax-card'
       card.setAttribute('data-speed', speed)
       
-      card.innerHTML = `
-        <video src="/media/${vidFile}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;"></video>
-      `
+      const video = document.createElement('video')
+      video.src = `/media/${vidFile}`
+      video.autoplay = true
+      video.loop = true
+      video.muted = true // Must be muted for mobile autoplay
+      video.playsInline = true
+      video.setAttribute('playsinline', '')
+      video.style.width = '100%'
+      video.style.height = '100%'
+      video.style.objectFit = 'cover'
+      video.style.borderRadius = 'inherit'
+      video.style.display = 'block'
+      
+      // Force play request
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(e => console.warn('Video auto-play blocked:', e))
+      }
+      
+      card.appendChild(video)
       videoContainer.appendChild(card)
     })
   }
@@ -148,7 +165,30 @@ function initAudio() {
   let isPlaying = false
 
   if (audioToggle && bgMusic) {
-    audioToggle.addEventListener('click', () => {
+    const startAudio = () => {
+      if (isPlaying) return
+      const playPromise = bgMusic.play()
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          isPlaying = true
+          iconPause.style.display = 'block'
+          iconPlay.style.display = 'none'
+          // Remove event listeners once playing successfully
+          document.removeEventListener('click', startAudio)
+          document.removeEventListener('touchstart', startAudio)
+        }).catch(e => console.warn("Audio play blocked by browser:", e))
+      }
+    }
+
+    // Try to auto-play immediately (browsers usually block this)
+    startAudio()
+
+    // Add interaction listeners: play music on first click or touch anywhere!
+    document.addEventListener('click', startAudio)
+    document.addEventListener('touchstart', startAudio)
+    
+    audioToggle.addEventListener('click', (e) => {
+      e.stopPropagation() // Prevent triggering the document click
       if (isPlaying) {
         bgMusic.pause()
         iconPause.style.display = 'none'
@@ -160,10 +200,6 @@ function initAudio() {
       }
       isPlaying = !isPlaying
     })
-    
-    bgMusic.pause()
-    iconPause.style.display = 'none'
-    iconPlay.style.display = 'block'
   }
 }
 
