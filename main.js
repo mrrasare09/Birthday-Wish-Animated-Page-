@@ -137,7 +137,7 @@ function initAmbientMouseTracking() {
 // --- Smooth Scrolling (Lenis) ---
 function initLenis() {
   const lenis = new Lenis({
-    duration: 0.8, // reduced for snappier, less laggy feel
+    duration: 0.8, // Snappier feel
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     direction: 'vertical',
     gestureDirection: 'vertical',
@@ -145,10 +145,19 @@ function initLenis() {
     mouseMultiplier: 1,
   })
 
-  // Expose globally so sticky nav smooth scroll works
-  window.lenis = lenis
+  // Performance Optimization: Toggle class during scroll to reduce GPU filter overhead
+  let scrollTimeout
+  lenis.on('scroll', () => {
+    document.body.classList.add('is-scrolling')
+    clearTimeout(scrollTimeout)
+    scrollTimeout = setTimeout(() => {
+      document.body.classList.remove('is-scrolling')
+    }, 150)
+    ScrollTrigger.update()
+  })
 
-  lenis.on('scroll', ScrollTrigger.update)
+  // Expose globally
+  window.lenis = lenis
 
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000)
@@ -248,7 +257,7 @@ function generateMediaElements() {
     images.forEach((imgFile) => {
       const item = document.createElement('div')
       item.className = 'swiper-slide gallery-item'
-      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" />`
+      item.innerHTML = `<img src="/media/${imgFile}" alt="Beautiful moment" loading="lazy" decoding="async" />`
       galleryContainer.appendChild(item)
       
       // Add 3D Tilt Effect
@@ -292,19 +301,19 @@ function generateMediaElements() {
         const video = entry.target.querySelector('video')
         if (!video) return
         
-        if (entry.isIntersecting) {
-          if (!video.src) {
-            video.src = video.dataset.src;
+        // Focus Playback: Only play if the video is significantly visible (>50%)
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          if (!video.src && video.dataset.src) {
+            video.src = video.dataset.src
           }
-          const playPromise = video.play()
-          if (playPromise !== undefined) {
-            playPromise.catch(e => console.warn('Video auto-play blocked:', e))
-          }
+          video.play().catch(() => {})
+          video.style.opacity = "1"
         } else {
           video.pause()
+          video.style.opacity = "0.8" // Dim inactive videos for focus
         }
       })
-    }, { rootMargin: '100px', threshold: 0.1 })
+    }, { rootMargin: '0px', threshold: [0, 0.5, 1.0] })
 
     videos.forEach((vidFile, index) => {
       const card = document.createElement('div')
