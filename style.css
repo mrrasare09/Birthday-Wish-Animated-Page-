@@ -596,8 +596,6 @@ main {
 }
 
 #gallery-items-container {
-  display: flex;
-  gap: 2rem;
   align-items: center;
 }
 
@@ -820,6 +818,8 @@ main {
 .char {
   display: inline-block;
   transform-origin: top left;
+  /* Safety fallback: if GSAP never animates, text is still readable */
+  will-change: transform, opacity;
 }
 
 /* Responsive */

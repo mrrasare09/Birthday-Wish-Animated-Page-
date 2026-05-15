@@ -25,6 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initLetterModal()
     initFinalePetals()
     initSwiper()
+    // Refresh ScrollTrigger after all dynamic content & Swiper are ready
+    setTimeout(() => ScrollTrigger.refresh(), 300)
+    setTimeout(() => ScrollTrigger.refresh(), 800)
   })
 })
 
@@ -142,6 +145,9 @@ function initLenis() {
     mouseMultiplier: 1,
   })
 
+  // Expose globally so sticky nav smooth scroll works
+  window.lenis = lenis
+
   lenis.on('scroll', ScrollTrigger.update)
 
   gsap.ticker.add((time) => {
@@ -149,6 +155,11 @@ function initLenis() {
   })
 
   gsap.ticker.lagSmoothing(0)
+
+  // Refresh ScrollTrigger after fonts are loaded and layout is stable
+  document.fonts.ready.then(() => {
+    ScrollTrigger.refresh()
+  })
 }
 
 // --- Floating Stardust Particles ---
@@ -394,15 +405,15 @@ function initMagneticButton() {
 
 // --- Core GSAP Animations & SplitType ---
 function initAnimations() {
-  // 1. Text Splitting
-  const standardText = new SplitType('.split-text', { types: 'lines, words, chars' })
-  const scriptText = new SplitType('.split-text-script', { types: 'chars' })
-  
-  // Advanced Clipping Mask Initial State: Text is hidden "below" the line
-  gsap.set(standardText.chars, { opacity: 0, y: "110%", rotateX: -90 })
-  gsap.set(scriptText.chars, { opacity: 0, scale: 0, rotation: -15 })
+  // 1. Text Splitting — split all .split-text elements
+  new SplitType('.split-text', { types: 'lines, words, chars' })
+  new SplitType('.split-text-script', { types: 'chars' })
 
-  // 2. Hero Reveal (Triggered immediately after preloader)
+  // 2. Hero ONLY: hide chars immediately (they reveal via timeline below)
+  gsap.set('.hero .split-text .char', { opacity: 0, y: "110%", rotateX: -90 })
+  gsap.set('.hero .split-text-script .char', { opacity: 0, scale: 0, rotation: -15 })
+
+  // Hero Reveal (Triggered immediately after preloader)
   const tlHero = gsap.timeline({ delay: 0.1 })
   
   tlHero.to('.hero .split-text .char', {
@@ -426,41 +437,63 @@ function initAnimations() {
   .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 0.8, ease: "power2.out" }, "-=0.4")
 
   // 3. Scroll Reveals for split text in other sections
+  // Using fromTo so chars are only hidden when the trigger fires —
+  // text is NEVER permanently invisible if a trigger misfires.
   document.querySelectorAll('.slide-section:not(.hero) .split-text').forEach((el) => {
     const chars = el.querySelectorAll('.char')
-    gsap.to(chars, {
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-      },
-      opacity: 1,
-      y: "0%",
-      rotateX: 0,
-      duration: 0.8,
-      stagger: 0.02,
-      ease: "power4.out",
-      force3D: true
-    })
-  })
-  
-  document.querySelectorAll('.slide-section:not(.hero) .split-text-script').forEach((el) => {
-    const chars = el.querySelectorAll('.char')
-    gsap.to(chars, {
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-      },
-      opacity: 1,
-      scale: 1,
-      rotation: 0,
-      duration: 1,
-      stagger: 0.04,
-      ease: "back.out(1.5)",
-      force3D: true
-    })
+    if (!chars.length) return
+    gsap.fromTo(chars,
+      { opacity: 0, y: "110%", rotateX: -90 },
+      {
+        scrollTrigger: { trigger: el, start: "top 95%", once: true },
+        opacity: 1,
+        y: "0%",
+        rotateX: 0,
+        duration: 0.8,
+        stagger: 0.02,
+        ease: "power4.out",
+        force3D: true
+      }
+    )
   })
 
-  // 4. Parallax Elements
+  document.querySelectorAll('.slide-section:not(.hero) .split-text-script').forEach((el) => {
+    const chars = el.querySelectorAll('.char')
+    if (!chars.length) return
+    gsap.fromTo(chars,
+      { opacity: 0, scale: 0, rotation: -15 },
+      {
+        scrollTrigger: { trigger: el, start: "top 95%", once: true },
+        opacity: 1,
+        scale: 1,
+        rotation: 0,
+        duration: 1,
+        stagger: 0.04,
+        ease: "back.out(1.5)",
+        force3D: true
+      }
+    )
+  })
+
+  // 4. Paragraph & non-split text fade-in reveals
+  document.querySelectorAll('.section-paragraph, .decorative-line, .timeline-container').forEach((el) => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 95%",
+          once: true,
+        }
+      }
+    )
+  })
+
+  // 5. Parallax Elements
   document.querySelectorAll('[data-speed]').forEach(el => {
     const speed = parseFloat(el.getAttribute('data-speed')) || 1
     gsap.to(el, {
@@ -474,31 +507,6 @@ function initAnimations() {
       }
     })
   })
-
-  // 5. Horizontal Scroll for Gallery
-  const galleryWrapper = document.querySelector('.gallery-wrapper')
-  const galleryTrack = document.querySelector('.gallery-track')
-
-  if (galleryWrapper && galleryTrack) {
-    setTimeout(() => {
-      const trackWidth = galleryTrack.scrollWidth
-      const viewportWidth = window.innerWidth
-      const scrollDistance = trackWidth - viewportWidth + 100
-      
-      gsap.to(galleryTrack, {
-        x: -scrollDistance,
-        ease: "none",
-        scrollTrigger: {
-          trigger: galleryWrapper,
-          start: "center center",
-          end: () => "+=" + scrollDistance,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        }
-      })
-    }, 200)
-  }
 }
 
 // --- Final Wow Features ---
