@@ -3,6 +3,7 @@ import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SplitType from 'split-type'
+import JSConfetti from 'js-confetti'
 
 // Register GSAP Plugins
 gsap.registerPlugin(ScrollTrigger)
@@ -15,12 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
   initAudio()
   initMagneticButton()
   initAnimations()
+  fireConfetti()
 })
+
+// --- Confetti ---
+function fireConfetti() {
+  const jsConfetti = new JSConfetti()
+  
+  // Fire slightly after the text animations start
+  setTimeout(() => {
+    jsConfetti.addConfetti({
+      emojis: ['🎉', '🎈', '✨', '🎂', '💖'],
+      emojiSize: 50,
+      confettiNumber: 40,
+    })
+  }, 400)
+}
 
 // --- Smooth Scrolling (Lenis) ---
 function initLenis() {
   const lenis = new Lenis({
-    duration: 1.5, // slightly longer for more ethereal feel
+    duration: 0.8, // reduced for snappier, less laggy feel
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     direction: 'vertical',
     gestureDirection: 'vertical',
@@ -42,7 +58,7 @@ function createParticles() {
   const container = document.getElementById('particles-container')
   if (!container) return
   
-  const particleCount = 30
+  const particleCount = 20 // reduced for performance
   
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('div')
@@ -66,7 +82,8 @@ function createParticles() {
       duration: Math.random() * 10 + 10,
       repeat: -1,
       yoyo: true,
-      ease: "sine.inOut"
+      ease: "sine.inOut",
+      force3D: true
     })
   }
 }
@@ -96,14 +113,15 @@ function generateGalleryPlaceholders() {
       const centerY = rect.height / 2
       
       const rotateX = ((y - centerY) / centerY) * -15 // max 15 deg tilt
-      const rotateY = ((x - centerX) / centerX) * 15
+      const rotateY = ((x - centerX) / centerX) * 10
       
       gsap.to(item, {
         rotationX: rotateX,
         rotationY: rotateY,
         transformPerspective: 1000,
         ease: "power2.out",
-        duration: 0.5
+        duration: 0.4,
+        force3D: true
       })
     })
     
@@ -112,7 +130,8 @@ function generateGalleryPlaceholders() {
         rotationX: 0,
         rotationY: 0,
         ease: "power2.out",
-        duration: 0.5
+        duration: 0.4,
+        force3D: true
       })
     })
   }
@@ -188,25 +207,27 @@ function initAnimations() {
   gsap.set(scriptText.chars, { opacity: 0, scale: 0, rotation: -15 })
 
   // 2. Hero Reveal
-  const tlHero = gsap.timeline({ delay: 0.2 })
+  const tlHero = gsap.timeline({ delay: 0.1 })
   
   tlHero.to('.hero .split-text .char', {
     opacity: 1,
     y: 0,
     rotateX: 0,
-    duration: 1,
-    stagger: 0.02,
-    ease: "back.out(1.2)"
+    duration: 0.6,
+    stagger: 0.015,
+    ease: "power3.out",
+    force3D: true
   })
   .to('.hero .split-text-script .char', {
     opacity: 1,
     scale: 1,
     rotation: 0,
-    duration: 1.2,
-    stagger: 0.05,
-    ease: "elastic.out(1, 0.4)"
-  }, "-=0.5")
-  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 1, ease: "power2.out" }, "-=0.5")
+    duration: 0.8,
+    stagger: 0.03,
+    ease: "back.out(1.5)",
+    force3D: true
+  }, "-=0.3")
+  .fromTo('.scroll-line', { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: "power2.out" }, "-=0.3")
 
   // 3. Scroll Reveals for split text in other sections
   document.querySelectorAll('.slide-section:not(.hero) .split-text').forEach((el) => {
@@ -219,9 +240,10 @@ function initAnimations() {
       opacity: 1,
       y: 0,
       rotateX: 0,
-      duration: 0.8,
-      stagger: 0.02,
-      ease: "back.out(1.2)"
+      duration: 0.6,
+      stagger: 0.015,
+      ease: "power3.out",
+      force3D: true
     })
   })
   
@@ -235,9 +257,10 @@ function initAnimations() {
       opacity: 1,
       scale: 1,
       rotation: 0,
-      duration: 1.2,
-      stagger: 0.05,
-      ease: "elastic.out(1, 0.4)"
+      duration: 0.8,
+      stagger: 0.03,
+      ease: "back.out(1.5)",
+      force3D: true
     })
   })
 
